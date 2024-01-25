@@ -1,25 +1,29 @@
 #!/usr/bin/node
-const request = require('request');
 
-const url = process.argv[2];
+const request = require("request");
 
-request(url, (error, response, body) => {
+const apiUrl = process.argv[2];
+
+request(apiUrl, (error, response, body) => {
   if (error) {
-    console.error(error);
+    console.error(error.message);
   } else {
-    const jsonBody = JSON.parse(body);
-    const movieList = jsonBody.results;
+    const data = JSON.parse(body);
+    const count = countChar18(data.results);
+    console.log(count);
+  }
+});
 
-    let wedgeAntilles = 0;
-
-    for (const movie of movieList) {
-      const characters = movie.characters;
-      for (const characterURL of characters) {
-        if (characterURL.includes('/18/')) {
-          wedgeAntilles++;
+function countChar18(results) {
+  let count = 0;
+  for (const result of results) {
+    if (result.characters) {
+      for (const character of result.characters) {
+        if (character.includes("18")) {
+          count++;
         }
       }
     }
-    console.log(wedgeAntilles);
   }
-});
+  return count;
+}
