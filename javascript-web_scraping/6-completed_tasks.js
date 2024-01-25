@@ -1,5 +1,6 @@
 #!/usr/bin/node
 const request = require('request');
+
 const apiUrl = process.argv[2];
 
 request(apiUrl, (error, response, body) => {
@@ -7,16 +8,18 @@ request(apiUrl, (error, response, body) => {
     console.error(error);
   } else {
     const tasks = JSON.parse(body);
-    const completedTasksByUser = {};
-    tasks.forEach(task => {
+    const completedTasks = {};
+
+    for (const task of tasks) {
       if (task.completed) {
-        if (completedTasksByUser[task.userId]) {
-          completedTasksByUser[task.userId]++;
+        if (completedTasks[task.userId]) {
+          completedTasks[task.userId]++;
         } else {
-          completedTasksByUser[task.userId] = 1;
+          completedTasks[task.userId] = 1;
         }
       }
-    });
-    console.log(completedTasksByUser);
+    }
+
+    console.log(completedTasks);
   }
 });
